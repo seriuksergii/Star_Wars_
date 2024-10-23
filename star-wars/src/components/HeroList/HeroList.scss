@@ -11,60 +11,50 @@
 
       .hero-list-container {
         list-style: none;
-        padding: 0;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 30px;
-
-        .hero-item {
-          color: #fff;
-          border: 3px solid #fff;
-          border-radius: 8px;
-          padding: 10px;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          text-transform: uppercase;
-          text-align: center;
-          cursor: pointer;
-
-          .hero-image {
-            width: 100%;
-            height: auto;
-            display: block;
-          }
-
-          .hero-name {
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: 900;
-            margin-top: 10px;
-          }
-
-          &:hover {
-            transform: scale(1.05);
-          }
-        }
+        padding-bottom: 50px;
       }
 
       .no-heroes-message {
         color: #fff;
         text-align: center;
       }
+    }
+  }
+}
 
-      button {
-        display: block;
-        margin: 30px auto;
-        padding: 10px 20px;
-        background-color: #fff;
+.pagination {
+  display: flex;
+  justify-content: right;
+  margin-bottom: 30px;
+  list-style: none;
+
+  li {
+    margin: 0 5px;
+    cursor: pointer;
+
+    &.active {
+      font-weight: bold;
+    }
+
+    a {
+      padding: 10px 15px;
+      border: 2px solid #fff;
+      background-color: #000;
+      transition: background-color 0.3s;
+      color: #feea1e;
+
+      &:hover {
+        background-color: #feea1e;
         color: #000;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-
-        &:hover {
-          background-color: #ccc;
-        }
       }
     }
+  }
+
+  .previous,
+  .next {
+    font-weight: bold;
   }
 }

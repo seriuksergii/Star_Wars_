@@ -1,4 +1,5 @@
 import React from 'react';
+import './HeroItem.scss';
 
 interface Props {
   src: string;

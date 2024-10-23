@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { getHeroes } from '../../servises/api'; // Убедитесь, что путь к вашему API корректный
-import { HeroItem } from '../HeroItem/HeroItem'; // Импортируйте ваш компонент HeroImage
-import { Loader } from '../Loader/Loader'; // Импортируйте ваш компонент Loader
+import ReactPaginate from 'react-paginate';
+import { getHeroes } from '../../servises/api';
+import { HeroItem } from '../HeroItem/HeroItem';
+import { Loader } from '../Loader/Loader';
+import './HeroList.scss';
 
 interface Hero {
   name: string;
-  id: number;
+  url: string;
 }
 
 export const HeroList: React.FC = () => {
   const [heroes, setHeroes] = useState<Hero[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1); // Состояние для страницы
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
 
-  // Функция для загрузки героев
+  const extractIdFromUrl = (url: string) => {
+    const parts = url.split('/').filter(Boolean);
+    return parts[parts.length - 1];
+  };
+
   useEffect(() => {
     const fetchHeroes = async () => {
       try {
         setLoading(true);
-        const response = await getHeroes(page);
-        setHeroes((prevHeroes) => {
-          const newHeroes = response.results;
-          const existingHeroes = new Set(prevHeroes.map((hero) => hero.id));
-          return [
-            ...prevHeroes,
-            ...newHeroes.filter((hero: Hero) => !existingHeroes.has(hero.id)),
-          ];
-        });
+        const response = await getHeroes(currentPage + 1);
+        setHeroes(response.results);
+        setPageCount(Math.ceil(response.total / itemsPerPage));
       } catch (error) {
         console.error('Error fetching heroes:', error);
       } finally {
@@ -35,7 +37,11 @@ export const HeroList: React.FC = () => {
     };
 
     fetchHeroes();
-  }, [page]); // Зависимость от страницы
+  }, [currentPage]);
+
+  const handlePageClick = (event: { selected: number }) => {
+    setCurrentPage(event.selected);
+  };
 
   return (
     <div className="hero">
@@ -44,29 +50,37 @@ export const HeroList: React.FC = () => {
           <h1 className="hero-logo">
             <img src="/logo.png" alt="Logo" />
           </h1>
+
+          <ReactPaginate
+            previousLabel={'<'}
+            nextLabel={'>'}
+            breakLabel={'...'}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+          />
+
           {loading ? (
-            <Loader /> // Показать лоадер, если идет загрузка
+            <Loader />
           ) : (
-            <>
-              {heroes.length > 0 ? (
-                <ul className="hero-list-container">
-                  {heroes.map((hero: Hero) => (
-                    <li className="hero-item" key={hero.id}>
-                      <HeroItem
-                        src={`https://starwars-visualguide.com/assets/img/characters/${hero.id}.jpg`}
-                        alt={hero.name}
-                        className="hero-image"
-                        name={hero.name}
-                      />
-                      <p className="hero-name">{hero.name}</p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="no-heroes-message">Heroes Not Found</p>
-              )}
-              <button onClick={() => setPage(page + 1)}>Load More</button> {/* Кнопка для загрузки следующей страницы */}
-            </>
+            <ul className="hero-list-container">
+              {heroes.map((hero) => {
+                const heroId = extractIdFromUrl(hero.url);
+                return (
+                  <li key={heroId}>
+                    <HeroItem
+                      src={`https://starwars-visualguide.com/assets/img/characters/${heroId}.jpg`}
+                      alt={hero.name}
+                      className="hero-image"
+                      name={hero.name}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
           )}
         </div>
       </div>
