@@ -35,7 +35,9 @@
     margin: 0 5px;
     cursor: pointer;
 
-    &.active {
+    &.active a {
+      background-color: #feea1e;
+      color: #000;
       font-weight: bold;
     }
 
