@@ -3,11 +3,14 @@ import ReactPaginate from 'react-paginate';
 import { getHeroes } from '../../servises/api';
 import { HeroItem } from '../HeroItem/HeroItem';
 import { Loader } from '../Loader/Loader';
+import { FlowGraph } from '../FlowGraph/FlowGraph';
+import Modal from 'react-modal';
 import './HeroList.scss';
 
 interface Hero {
   name: string;
   url: string;
+  homeworld: string; // Додано поле homeworld
 }
 
 export const HeroList: React.FC = () => {
@@ -16,6 +19,10 @@ export const HeroList: React.FC = () => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
+
+  // Додано стан для модального вікна
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
 
   const extractIdFromUrl = (url: string) => {
     const parts = url.split('/').filter(Boolean);
@@ -41,6 +48,18 @@ export const HeroList: React.FC = () => {
 
   const handlePageClick = (event: { selected: number }) => {
     setCurrentPage(event.selected);
+  };
+
+  // Функція для відкриття модального вікна
+  const openModal = (hero: Hero) => {
+    setSelectedHero(hero);
+    setIsModalOpen(true);
+  };
+
+  // Функція для закриття модального вікна
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedHero(null);
   };
 
   return (
@@ -76,11 +95,28 @@ export const HeroList: React.FC = () => {
                       alt={hero.name}
                       className="hero-image"
                       name={hero.name}
+                      onClick={() => openModal(hero)}
                     />
                   </li>
                 );
               })}
             </ul>
+          )}
+
+          {selectedHero && (
+            <Modal
+              isOpen={isModalOpen}
+              onRequestClose={closeModal}
+              contentLabel="Hero Details"
+              ariaHideApp={false} // Встановіть true для кращої доступності
+            >
+              <h2>{selectedHero.name}</h2>
+              <FlowGraph
+                heroName={selectedHero.name}
+                homeworld={selectedHero.homeworld}
+              />
+              <button onClick={closeModal}>Close</button>
+            </Modal>
           )}
         </div>
       </div>
