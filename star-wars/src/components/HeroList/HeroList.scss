@@ -60,3 +60,12 @@
     font-weight: bold;
   }
 }
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.7); // Напівпрозорий чорний фон
+}
+
+.ReactModal__Content {
+  background: #ffffff; // Білий фон
+  border-radius: 10px; // Закруглені кути
+  padding: 20px; // Внутрішні відступи
+}

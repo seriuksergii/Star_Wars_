@@ -3,14 +3,26 @@ import ReactPaginate from 'react-paginate';
 import { getHeroes } from '../../servises/api';
 import { HeroItem } from '../HeroItem/HeroItem';
 import { Loader } from '../Loader/Loader';
-import { FlowGraph } from '../FlowGraph/FlowGraph';
 import Modal from 'react-modal';
 import './HeroList.scss';
+import { HeroFlow } from '../HeroFlow/HeroFlow';
 
 interface Hero {
   name: string;
   url: string;
-  homeworld: string; // Додано поле homeworld
+  homeworld: string;
+  birth_year: string;
+  eye_color: string;
+  gender: string;
+  hair_color: string;
+  height: string;
+  mass: string;
+  skin_color: string;
+  films: string[];
+  species: string[];
+  starships: string[];
+  vehicles: string[];
+  close: () => void;
 }
 
 export const HeroList: React.FC = () => {
@@ -19,14 +31,66 @@ export const HeroList: React.FC = () => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-
-  // Додано стан для модального вікна
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
+  const [filmTitles, setFilmTitles] = useState<string[]>([]);
+  const [speciesNames, setSpeciesNames] = useState<string[]>([]);
+  const [starshipNames, setStarshipNames] = useState<string[]>([]);
+  const [vehicleNames, setVehicleNames] = useState<string[]>([]);
 
   const extractIdFromUrl = (url: string) => {
     const parts = url.split('/').filter(Boolean);
     return parts[parts.length - 1];
+  };
+
+  const fetchFilmTitles = async (filmIds: string[]) => {
+    const titles = await Promise.all(
+      filmIds.map(async (id) => {
+        const response = await fetch(`https://sw-api.starnavi.io/films/${id}/`);
+        const filmData = await response.json();
+        return filmData.title;
+      })
+    );
+    return titles;
+  };
+
+  const fetchSpeciesNames = async (speciesIds: string[]) => {
+    const names = await Promise.all(
+      speciesIds.map(async (id) => {
+        const response = await fetch(
+          `https://sw-api.starnavi.io/species/${id}/`
+        );
+        const speciesData = await response.json();
+        return speciesData.name;
+      })
+    );
+    return names;
+  };
+
+  const fetchStarshipNames = async (starshipIds: string[]) => {
+    const names = await Promise.all(
+      starshipIds.map(async (id) => {
+        const response = await fetch(
+          `https://sw-api.starnavi.io/starships/${id}/`
+        );
+        const starshipData = await response.json();
+        return starshipData.name;
+      })
+    );
+    return names;
+  };
+
+  const fetchVehicleNames = async (vehicleIds: string[]) => {
+    const names = await Promise.all(
+      vehicleIds.map(async (id) => {
+        const response = await fetch(
+          `https://sw-api.starnavi.io/vehicles/${id}/`
+        );
+        const vehicleData = await response.json();
+        return vehicleData.name;
+      })
+    );
+    return names;
   };
 
   useEffect(() => {
@@ -50,16 +114,32 @@ export const HeroList: React.FC = () => {
     setCurrentPage(event.selected);
   };
 
-  // Функція для відкриття модального вікна
-  const openModal = (hero: Hero) => {
+  const openModal = async (hero: Hero) => {
     setSelectedHero(hero);
+
+    // Отримуємо назви фільмів, видів, зіркових кораблів та транспортних засобів
+    const titles = await fetchFilmTitles(hero.films);
+    setFilmTitles(titles);
+
+    const speciesNames = await fetchSpeciesNames(hero.species);
+    setSpeciesNames(speciesNames);
+
+    const starshipNames = await fetchStarshipNames(hero.starships);
+    setStarshipNames(starshipNames);
+
+    const vehicleNames = await fetchVehicleNames(hero.vehicles);
+    setVehicleNames(vehicleNames);
+
     setIsModalOpen(true);
   };
 
-  // Функція для закриття модального вікна
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedHero(null);
+    setFilmTitles([]);
+    setSpeciesNames([]);
+    setStarshipNames([]);
+    setVehicleNames([]);
   };
 
   return (
@@ -108,14 +188,25 @@ export const HeroList: React.FC = () => {
               isOpen={isModalOpen}
               onRequestClose={closeModal}
               contentLabel="Hero Details"
-              ariaHideApp={false} // Встановіть true для кращої доступності
+              ariaHideApp={false}
             >
-              <h2>{selectedHero.name}</h2>
-              <FlowGraph
+              <HeroFlow
                 heroName={selectedHero.name}
-                homeworld={selectedHero.homeworld}
+                birthYear={selectedHero.birth_year}
+                eyeColor={selectedHero.eye_color}
+                gender={selectedHero.gender}
+                hairColor={selectedHero.hair_color}
+                height={selectedHero.height}
+                mass={selectedHero.mass}
+                skinColor={selectedHero.skin_color}
+                homeworld={selectedHero.homeworld} // Передати URL або відповідну назву
+                films={filmTitles}
+                starships={starshipNames}
+                heroImage={`https://starwars-visualguide.com/assets/img/characters/${extractIdFromUrl(
+                  selectedHero.url
+                )}.jpg`}
+                close={closeModal}
               />
-              <button onClick={closeModal}>Close</button>
             </Modal>
           )}
         </div>
