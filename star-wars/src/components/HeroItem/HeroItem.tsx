@@ -6,13 +6,21 @@ interface Props {
   alt: string;
   className?: string;
   name: string;
+  onClick: () => void;
 }
 
-export const HeroItem: React.FC<Props> = ({ src, alt, className, name }) => {
+export const HeroItem: React.FC<Props> = ({
+  src,
+  alt,
+  className,
+  name,
+  onClick,
+}) => {
   return (
-    <li className="hero-item">
+    <div className="hero-item" onClick={onClick}>
       <img src={src} alt={alt} className={className} />
       <p className="hero-name">{name}</p>
-    </li>
+      
+    </div>
   );
 };

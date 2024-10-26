@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import ReactPaginate from 'react-paginate';
-import { getHeroes } from '../../servises/api';
-import { HeroItem } from '../HeroItem/HeroItem';
-import { Loader } from '../Loader/Loader';
-import './HeroList.scss';
+import { Pagination } from '../Pagination';
 
-interface Hero {
-  name: string;
-  url: string;
-}
+import {
+  getHeroes,
+  fetchFilmTitles,
+  fetchSpeciesNames,
+  fetchStarshipNames,
+  fetchVehicleNames,
+} from '../../api/StarWarsAPI';
+import { extractIdFromUrl } from '../../utils/utils';
+import { HeroItem } from '../HeroItem/HeroItem';
+import { Loader } from '../Loader';
+import Modal from 'react-modal';
+import { HeroGraph } from '../../features/HeroGraph';
+import { Hero } from '../../types/types';
+
+import './HeroList.scss';
 
 export const HeroList: React.FC = () => {
   const [heroes, setHeroes] = useState<Hero[]>([]);
@@ -16,11 +23,12 @@ export const HeroList: React.FC = () => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-
-  const extractIdFromUrl = (url: string) => {
-    const parts = url.split('/').filter(Boolean);
-    return parts[parts.length - 1];
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
+  const [filmTitles, setFilmTitles] = useState<string[]>([]);
+  const [, setSpeciesNames] = useState<string[]>([]);
+  const [starshipNames, setStarshipNames] = useState<string[]>([]);
+  const [, setVehicleNames] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchHeroes = async () => {
@@ -43,6 +51,33 @@ export const HeroList: React.FC = () => {
     setCurrentPage(event.selected);
   };
 
+  const openModal = async (hero: Hero) => {
+    setSelectedHero(hero);
+
+    const titles = await fetchFilmTitles(hero.films);
+    setFilmTitles(titles);
+
+    const speciesNames = await fetchSpeciesNames(hero.species);
+    setSpeciesNames(speciesNames);
+
+    const starshipNames = await fetchStarshipNames(hero.starships);
+    setStarshipNames(starshipNames);
+
+    const vehicleNames = await fetchVehicleNames(hero.vehicles);
+    setVehicleNames(vehicleNames);
+
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedHero(null);
+    setFilmTitles([]);
+    setSpeciesNames([]);
+    setStarshipNames([]);
+    setVehicleNames([]);
+  };
+
   return (
     <div className="hero">
       <div className="hero-container">
@@ -51,17 +86,7 @@ export const HeroList: React.FC = () => {
             <img src="/logo.png" alt="Logo" />
           </h1>
 
-          <ReactPaginate
-            previousLabel={'<'}
-            nextLabel={'>'}
-            breakLabel={'...'}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={handlePageClick}
-            containerClassName={'pagination'}
-            activeClassName={'active'}
-          />
+          <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
 
           {loading ? (
             <Loader />
@@ -76,11 +101,40 @@ export const HeroList: React.FC = () => {
                       alt={hero.name}
                       className="hero-image"
                       name={hero.name}
+                      onClick={() => openModal(hero)}
                     />
                   </li>
                 );
               })}
             </ul>
+          )}
+
+          {selectedHero && (
+            <Modal
+              isOpen={isModalOpen}
+              onRequestClose={closeModal}
+              contentLabel="Hero Details"
+              ariaHideApp={false}
+            >
+              <HeroGraph
+                heroName={selectedHero.name}
+                birthYear={selectedHero.birth_year}
+                eyeColor={selectedHero.eye_color}
+                gender={selectedHero.gender}
+                hairColor={selectedHero.hair_color}
+                height={selectedHero.height}
+                mass={selectedHero.mass}
+                skinColor={selectedHero.skin_color}
+                homeworld={selectedHero.homeworld}
+                films={filmTitles}
+                filmNames={filmTitles}
+                starships={starshipNames}
+                heroImage={`https://starwars-visualguide.com/assets/img/characters/${extractIdFromUrl(
+                  selectedHero.url
+                )}.jpg`}
+                close={closeModal}
+              />
+            </Modal>
           )}
         </div>
       </div>

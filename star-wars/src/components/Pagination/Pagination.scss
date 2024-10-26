@@ -1,0 +1,35 @@
+.pagination {
+  display: flex;
+  justify-content: right;
+  margin-bottom: 30px;
+  list-style: none;
+
+  li {
+    margin: 0 5px;
+    cursor: pointer;
+
+    &.active a {
+      background-color: #feea1e;
+      color: #000;
+      font-weight: bold;
+    }
+
+    a {
+      padding: 10px 15px;
+      border: 2px solid #fff;
+      background-color: #000;
+      transition: background-color 0.3s;
+      color: #feea1e;
+
+      &:hover {
+        background-color: #feea1e;
+        color: #000;
+      }
+    }
+  }
+
+  .previous,
+  .next {
+    font-weight: bold;
+  }
+}

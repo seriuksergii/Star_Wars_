@@ -1,0 +1,30 @@
+.intersection-flow {
+  background-image: url('../../../public/bg.jpg');
+  background-size: cover;
+  height: 100vh;
+  border-radius: 40px;
+}
+
+.intersection-flow .react-flow__node {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.intersection-flow .react-flow__edge {
+  stroke: #feea1e;
+  stroke-width: 2;
+}
+
+.intersection-flow .react-flow__edge:hover {
+  stroke: #feea1e;
+}
+
+.intersection-flow .react-flow__node {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #feea1e;
+}
+
+.intersection-flow .react-flow__node:hover {
+  border-color: #feea1e;
+}
