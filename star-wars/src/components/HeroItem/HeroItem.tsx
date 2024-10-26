@@ -20,6 +20,7 @@ export const HeroItem: React.FC<Props> = ({
     <div className="hero-item" onClick={onClick}>
       <img src={src} alt={alt} className={className} />
       <p className="hero-name">{name}</p>
+      
     </div>
   );
 };

@@ -1,9 +1,13 @@
 import React from 'react';
 import { ReactFlow, useNodesState, type Edge, type Node } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import './HeroFlow.scss';
+import './HeroGraph.scss';
 
-interface HeroFlowProps {
+import { HeroNode } from '../HeroGraph/nodes/HeroNode';
+import { FilmNode } from '../HeroGraph/nodes/FilmNode';
+import { StarshipNode } from '../HeroGraph/nodes/StarshipNode';
+
+interface Props {
   heroName: string;
   birthYear: string;
   eyeColor: string;
@@ -16,9 +20,11 @@ interface HeroFlowProps {
   films: string[];
   starships: string[];
   heroImage: string;
+  filmNames: string [];
+  close: () => void;
 }
 
-export const HeroFlow: React.FC<HeroFlowProps> = ({
+export const HeroGraph: React.FC<Props> = ({
   heroName,
   birthYear,
   eyeColor,
@@ -38,23 +44,21 @@ export const HeroFlow: React.FC<HeroFlowProps> = ({
       type: 'input',
       data: {
         label: (
-          <div className="hero-node">
-            <img src={heroImage} alt={heroName} className="hero-image" />
-            <div className="hero-info">
-              <p>{`Ім'я: ${heroName}`}</p>
-              <p>{`Рік народження: ${birthYear}`}</p>
-              <p>{`Колір очей: ${eyeColor}`}</p>
-              <p>{`Стать: ${gender}`}</p>
-              <p>{`Колір волосся: ${hairColor}`}</p>
-              <p>{`Висота: ${height}`}</p>
-              <p>{`Маса: ${mass}`}</p>
-              <p>{`Колір шкіри: ${skinColor}`}</p>
-              <p>{`Рідна планета: ${homeworld}`}</p>
-            </div>
-          </div>
+          <HeroNode
+            heroName={heroName}
+            birthYear={birthYear}
+            eyeColor={eyeColor}
+            gender={gender}
+            hairColor={hairColor}
+            height={height}
+            mass={mass}
+            skinColor={skinColor}
+            homeworld={homeworld}
+            heroImage={heroImage}
+          />
         ),
       },
-      position: { x: 250, y: 0 },
+      position: { x: -500, y: 0 },
     },
   ];
 
@@ -62,11 +66,7 @@ export const HeroFlow: React.FC<HeroFlowProps> = ({
     initialNodes.push({
       id: `film-${index}`,
       data: {
-        label: (
-          <div className="film-node">
-            <p>{`Фільм: ${film}`}</p>
-          </div>
-        ),
+        label: <FilmNode filmName={film} />,
       },
       position: { x: 100, y: 100 + index * 100 },
     });
@@ -76,9 +76,7 @@ export const HeroFlow: React.FC<HeroFlowProps> = ({
     initialNodes.push({
       id: `starship-${index}`,
       data: {
-        label: (
-          <div className="starship-node">Зірковий Корабель: {starship}</div>
-        ),
+        label: <StarshipNode name={starship} />,
       },
       position: { x: 400, y: 100 + index * 100 },
     });
@@ -106,7 +104,7 @@ export const HeroFlow: React.FC<HeroFlowProps> = ({
     });
   });
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
 
   return (
     <ReactFlow

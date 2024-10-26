@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import ReactPaginate from 'react-paginate';
-import { getHeroes } from '../../servises/api';
-import { HeroItem } from '../HeroItem/HeroItem';
-import { Loader } from '../Loader/Loader';
-import Modal from 'react-modal';
-import './HeroList.scss';
-import { HeroFlow } from '../HeroFlow/HeroFlow';
+import { Pagination } from '../Pagination';
 
-interface Hero {
-  name: string;
-  url: string;
-  homeworld: string;
-  birth_year: string;
-  eye_color: string;
-  gender: string;
-  hair_color: string;
-  height: string;
-  mass: string;
-  skin_color: string;
-  films: string[];
-  species: string[];
-  starships: string[];
-  vehicles: string[];
-  close: () => void;
-}
+import {
+  getHeroes,
+  fetchFilmTitles,
+  fetchSpeciesNames,
+  fetchStarshipNames,
+  fetchVehicleNames,
+} from '../../api/StarWarsAPI';
+import { extractIdFromUrl } from '../../utils/utils';
+import { HeroItem } from '../HeroItem/HeroItem';
+import { Loader } from '../Loader';
+import Modal from 'react-modal';
+import { HeroGraph } from '../../features/HeroGraph';
+import { Hero } from '../../types/types';
+
+import './HeroList.scss';
 
 export const HeroList: React.FC = () => {
   const [heroes, setHeroes] = useState<Hero[]>([]);
@@ -34,64 +26,9 @@ export const HeroList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
   const [filmTitles, setFilmTitles] = useState<string[]>([]);
-  const [speciesNames, setSpeciesNames] = useState<string[]>([]);
+  const [, setSpeciesNames] = useState<string[]>([]);
   const [starshipNames, setStarshipNames] = useState<string[]>([]);
-  const [vehicleNames, setVehicleNames] = useState<string[]>([]);
-
-  const extractIdFromUrl = (url: string) => {
-    const parts = url.split('/').filter(Boolean);
-    return parts[parts.length - 1];
-  };
-
-  const fetchFilmTitles = async (filmIds: string[]) => {
-    const titles = await Promise.all(
-      filmIds.map(async (id) => {
-        const response = await fetch(`https://sw-api.starnavi.io/films/${id}/`);
-        const filmData = await response.json();
-        return filmData.title;
-      })
-    );
-    return titles;
-  };
-
-  const fetchSpeciesNames = async (speciesIds: string[]) => {
-    const names = await Promise.all(
-      speciesIds.map(async (id) => {
-        const response = await fetch(
-          `https://sw-api.starnavi.io/species/${id}/`
-        );
-        const speciesData = await response.json();
-        return speciesData.name;
-      })
-    );
-    return names;
-  };
-
-  const fetchStarshipNames = async (starshipIds: string[]) => {
-    const names = await Promise.all(
-      starshipIds.map(async (id) => {
-        const response = await fetch(
-          `https://sw-api.starnavi.io/starships/${id}/`
-        );
-        const starshipData = await response.json();
-        return starshipData.name;
-      })
-    );
-    return names;
-  };
-
-  const fetchVehicleNames = async (vehicleIds: string[]) => {
-    const names = await Promise.all(
-      vehicleIds.map(async (id) => {
-        const response = await fetch(
-          `https://sw-api.starnavi.io/vehicles/${id}/`
-        );
-        const vehicleData = await response.json();
-        return vehicleData.name;
-      })
-    );
-    return names;
-  };
+  const [, setVehicleNames] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchHeroes = async () => {
@@ -117,7 +54,6 @@ export const HeroList: React.FC = () => {
   const openModal = async (hero: Hero) => {
     setSelectedHero(hero);
 
-    // Отримуємо назви фільмів, видів, зіркових кораблів та транспортних засобів
     const titles = await fetchFilmTitles(hero.films);
     setFilmTitles(titles);
 
@@ -150,17 +86,7 @@ export const HeroList: React.FC = () => {
             <img src="/logo.png" alt="Logo" />
           </h1>
 
-          <ReactPaginate
-            previousLabel={'<'}
-            nextLabel={'>'}
-            breakLabel={'...'}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={handlePageClick}
-            containerClassName={'pagination'}
-            activeClassName={'active'}
-          />
+          <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
 
           {loading ? (
             <Loader />
@@ -190,7 +116,7 @@ export const HeroList: React.FC = () => {
               contentLabel="Hero Details"
               ariaHideApp={false}
             >
-              <HeroFlow
+              <HeroGraph
                 heroName={selectedHero.name}
                 birthYear={selectedHero.birth_year}
                 eyeColor={selectedHero.eye_color}
@@ -199,8 +125,9 @@ export const HeroList: React.FC = () => {
                 height={selectedHero.height}
                 mass={selectedHero.mass}
                 skinColor={selectedHero.skin_color}
-                homeworld={selectedHero.homeworld} // Передати URL або відповідну назву
+                homeworld={selectedHero.homeworld}
                 films={filmTitles}
+                filmNames={filmTitles}
                 starships={starshipNames}
                 heroImage={`https://starwars-visualguide.com/assets/img/characters/${extractIdFromUrl(
                   selectedHero.url

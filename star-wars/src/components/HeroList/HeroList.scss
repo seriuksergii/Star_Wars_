@@ -15,6 +15,14 @@
         grid-template-columns: repeat(5, 1fr);
         gap: 30px;
         padding-bottom: 50px;
+
+        @media (max-width: 1024px) {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 768px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
       .no-heroes-message {
@@ -23,49 +31,4 @@
       }
     }
   }
-}
-
-.pagination {
-  display: flex;
-  justify-content: right;
-  margin-bottom: 30px;
-  list-style: none;
-
-  li {
-    margin: 0 5px;
-    cursor: pointer;
-
-    &.active a {
-      background-color: #feea1e;
-      color: #000;
-      font-weight: bold;
-    }
-
-    a {
-      padding: 10px 15px;
-      border: 2px solid #fff;
-      background-color: #000;
-      transition: background-color 0.3s;
-      color: #feea1e;
-
-      &:hover {
-        background-color: #feea1e;
-        color: #000;
-      }
-    }
-  }
-
-  .previous,
-  .next {
-    font-weight: bold;
-  }
-}
-.ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.7); // Напівпрозорий чорний фон
-}
-
-.ReactModal__Content {
-  background: #ffffff; // Білий фон
-  border-radius: 10px; // Закруглені кути
-  padding: 20px; // Внутрішні відступи
 }
