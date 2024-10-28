@@ -1,9 +1,7 @@
 import React from 'react';
-import './StarshipNode.scss';
+import { StarshipNodeProps } from '../../../../types/types';
 
-interface StarshipNodeProps {
-  name: string;
-}
+import './StarshipNode.scss';
 
 export const StarshipNode: React.FC<StarshipNodeProps> = ({ name }) => (
   <div className="starship-node">

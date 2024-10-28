@@ -1,20 +1,9 @@
 import React from 'react';
+import { HeroNodeProps } from '../../../../types/types';
+
 import './HeroNode.scss';
 
-interface Props {
-  heroImage: string;
-  heroName: string;
-  birthYear: string;
-  eyeColor: string;
-  gender: string;
-  hairColor: string;
-  height: string;
-  mass: string;
-  skinColor: string;
-  homeworld: string;
-}
-
-export const HeroNode: React.FC<Props> = ({
+export const HeroNode: React.FC<HeroNodeProps> = ({
   heroImage,
   heroName,
   birthYear,

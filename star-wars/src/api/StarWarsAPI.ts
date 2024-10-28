@@ -47,6 +47,20 @@ export const fetchStarshipNames = async (starshipIds: string[]) => {
   return names;
 };
 
+export const fetchPlanetName = async (homeworldIds: string[]) => {
+  const names = await Promise.all(
+    homeworldIds.map(async (id) => {
+      const response = await fetch(`https://sw-api.starnavi.io/planets/${id}/`);
+      if (!response.ok) {
+        throw new Error('Unable to load planet data');
+      }
+      const planetData = await response.json();
+      return planetData.name;
+    })
+  );
+  return names;
+};
+
 export const fetchVehicleNames = async (vehicleIds: string[]) => {
   const names = await Promise.all(
     vehicleIds.map(async (id) => {

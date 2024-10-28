@@ -1,15 +1,8 @@
 import React from 'react';
+import { HeroItemProps } from '../../types/types';
 import './HeroItem.scss';
 
-interface Props {
-  src: string;
-  alt: string;
-  className?: string;
-  name: string;
-  onClick: () => void;
-}
-
-export const HeroItem: React.FC<Props> = ({
+export const HeroItem: React.FC<HeroItemProps> = ({
   src,
   alt,
   className,
@@ -17,10 +10,9 @@ export const HeroItem: React.FC<Props> = ({
   onClick,
 }) => {
   return (
-    <div className="hero-item" onClick={onClick}>
+    <div className="hero-item" data-testid="hero-item" onClick={onClick}>
       <img src={src} alt={alt} className={className} />
-      <p className="hero-name">{name}</p>
-      
+      <p className="hero-name" data-testid="hero-name">{name}</p>
     </div>
   );
 };
