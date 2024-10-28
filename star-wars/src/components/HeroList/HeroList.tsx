@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Pagination } from '../Pagination';
-
 import {
   getHeroes,
   fetchFilmTitles,
@@ -9,10 +8,9 @@ import {
   fetchVehicleNames,
 } from '../../api/StarWarsAPI';
 import { extractIdFromUrl } from '../../utils/utils';
-import { HeroItem } from '../HeroItem/HeroItem';
+import { HeroItem } from '../HeroItem';
 import { Loader } from '../Loader';
-import Modal from 'react-modal';
-import { HeroGraph } from '../../features/HeroGraph';
+import { HeroModal } from '../HeroModal';
 import { Hero } from '../../types/types';
 
 import './HeroList.scss';
@@ -79,7 +77,7 @@ export const HeroList: React.FC = () => {
   };
 
   return (
-    <div className="hero">
+    <div className="hero" data-testid="hero">
       <div className="hero-container">
         <div className="hero-list">
           <h1 className="hero-logo">
@@ -109,33 +107,13 @@ export const HeroList: React.FC = () => {
             </ul>
           )}
 
-          {selectedHero && (
-            <Modal
-              isOpen={isModalOpen}
-              onRequestClose={closeModal}
-              contentLabel="Hero Details"
-              ariaHideApp={false}
-            >
-              <HeroGraph
-                heroName={selectedHero.name}
-                birthYear={selectedHero.birth_year}
-                eyeColor={selectedHero.eye_color}
-                gender={selectedHero.gender}
-                hairColor={selectedHero.hair_color}
-                height={selectedHero.height}
-                mass={selectedHero.mass}
-                skinColor={selectedHero.skin_color}
-                homeworld={selectedHero.homeworld}
-                films={filmTitles}
-                filmNames={filmTitles}
-                starships={starshipNames}
-                heroImage={`https://starwars-visualguide.com/assets/img/characters/${extractIdFromUrl(
-                  selectedHero.url
-                )}.jpg`}
-                close={closeModal}
-              />
-            </Modal>
-          )}
+          <HeroModal
+            isOpen={isModalOpen}
+            selectedHero={selectedHero}
+            filmTitles={filmTitles}
+            starshipNames={starshipNames}
+            close={closeModal}
+          />
         </div>
       </div>
     </div>

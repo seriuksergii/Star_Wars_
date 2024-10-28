@@ -6,25 +6,9 @@ import './HeroGraph.scss';
 import { HeroNode } from '../HeroGraph/nodes/HeroNode';
 import { FilmNode } from '../HeroGraph/nodes/FilmNode';
 import { StarshipNode } from '../HeroGraph/nodes/StarshipNode';
+import { HeroGraphProps } from '../../types/types';
 
-interface Props {
-  heroName: string;
-  birthYear: string;
-  eyeColor: string;
-  gender: string;
-  hairColor: string;
-  height: string;
-  mass: string;
-  skinColor: string;
-  homeworld: string;
-  films: string[];
-  starships: string[];
-  heroImage: string;
-  filmNames: string [];
-  close: () => void;
-}
-
-export const HeroGraph: React.FC<Props> = ({
+export const HeroGraph: React.FC<HeroGraphProps> = ({
   heroName,
   birthYear,
   eyeColor,
@@ -68,7 +52,7 @@ export const HeroGraph: React.FC<Props> = ({
       data: {
         label: <FilmNode filmName={film} />,
       },
-      position: { x: 100, y: 100 + index * 100 },
+      position: { x: -200, y: 100 + index * 200 },
     });
   });
 
@@ -78,7 +62,7 @@ export const HeroGraph: React.FC<Props> = ({
       data: {
         label: <StarshipNode name={starship} />,
       },
-      position: { x: 400, y: 100 + index * 100 },
+      position: { x: 200, y: 100 + index * 200 },
     });
   });
 
@@ -89,7 +73,8 @@ export const HeroGraph: React.FC<Props> = ({
       id: `e1-${index}`,
       source: 'hero',
       target: `film-${index}`,
-      animated: true,
+      animated: false,
+      style: { stroke: '#feea1e', strokeWidth: 2 },
     });
   });
 
@@ -99,7 +84,8 @@ export const HeroGraph: React.FC<Props> = ({
         id: `e-film-${filmIndex}-starship-${starshipIndex}`,
         source: `film-${filmIndex}`,
         target: `starship-${starshipIndex}`,
-        animated: true,
+        animated: false,
+        style: { stroke: '#0047ab', strokeWidth: 2 },
       });
     });
   });

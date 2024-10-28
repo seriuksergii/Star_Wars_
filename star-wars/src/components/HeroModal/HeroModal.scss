@@ -1,0 +1,17 @@
+.close-button {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 40px;
+  color: #feea1e;
+  z-index: 2000;
+
+  &:hover {
+    color: #a99c0e;
+  }
+}
