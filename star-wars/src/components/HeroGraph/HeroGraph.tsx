@@ -8,20 +8,22 @@ import { FilmNode } from '../HeroGraph/nodes/FilmNode';
 import { StarshipNode } from '../HeroGraph/nodes/StarshipNode';
 import { HeroGraphProps } from '../../types/types';
 
+// I declare the HeroGraph component
 export const HeroGraph: React.FC<HeroGraphProps> = ({
   heroName,
-  birthYear,
-  eyeColor,
+  birth_year,
+  eye_color,
   gender,
-  hairColor,
+  hair_color,
   height,
   mass,
-  skinColor,
+  skin_color,
   homeworld,
   films,
   starships,
   heroImage,
 }) => {
+  // I initialize the nodes for the graph
   const initialNodes: Node[] = [
     {
       id: 'hero',
@@ -30,13 +32,13 @@ export const HeroGraph: React.FC<HeroGraphProps> = ({
         label: (
           <HeroNode
             heroName={heroName}
-            birthYear={birthYear}
-            eyeColor={eyeColor}
+            birth_year={birth_year}
+            eye_color={eye_color}
             gender={gender}
-            hairColor={hairColor}
+            hair_color={hair_color}
             height={height}
             mass={mass}
-            skinColor={skinColor}
+            skin_color={skin_color}
             homeworld={homeworld}
             heroImage={heroImage}
           />
@@ -46,16 +48,18 @@ export const HeroGraph: React.FC<HeroGraphProps> = ({
     },
   ];
 
+  //Add nodes for films
   films.forEach((film, index) => {
     initialNodes.push({
       id: `film-${index}`,
       data: {
         label: <FilmNode filmName={film} />,
       },
-      position: { x: -200, y: 100 + index * 200 },
+      position: { x: -200, y: 100 + index * 150 },
     });
   });
 
+  // Add nodes for starships
   starships.forEach((starship, index) => {
     initialNodes.push({
       id: `starship-${index}`,
@@ -66,8 +70,10 @@ export const HeroGraph: React.FC<HeroGraphProps> = ({
     });
   });
 
+  // Initialize the edges of the graph
   const initialEdges: Edge[] = [];
 
+  // Add edges between the hero and the films
   films.forEach((_, index) => {
     initialEdges.push({
       id: `e1-${index}`,
@@ -78,6 +84,7 @@ export const HeroGraph: React.FC<HeroGraphProps> = ({
     });
   });
 
+  // Add edges between movies and starships
   starships.forEach((_, starshipIndex) => {
     films.forEach((_, filmIndex) => {
       initialEdges.push({
@@ -85,11 +92,12 @@ export const HeroGraph: React.FC<HeroGraphProps> = ({
         source: `film-${filmIndex}`,
         target: `starship-${starshipIndex}`,
         animated: false,
-        style: { stroke: '#0047ab', strokeWidth: 2 },
+        style: { stroke: '#feea1e', strokeWidth: 2 },
       });
     });
   });
 
+  // Hook for node state
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
 
   return (

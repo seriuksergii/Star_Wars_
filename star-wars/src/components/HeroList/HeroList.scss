@@ -1,33 +1,32 @@
 .hero {
-  .hero-container {
+  &-container {
     max-width: 1200px;
     margin: 0 auto;
 
     .hero-list {
-      .hero-logo img {
-        width: 400px;
-        height: auto;
+      &-logo {
+        img {
+          width: 400px;
+          height: auto;
+        }
       }
 
       .hero-list-container {
-        list-style: none;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 30px;
-        padding-bottom: 50px;
+        list-style: none;
+        padding: 0 25px 50px;
 
         @media (max-width: 1024px) {
           grid-template-columns: repeat(4, 1fr);
+          padding: 0 15px;
         }
 
         @media (max-width: 768px) {
           grid-template-columns: repeat(2, 1fr);
+          padding: 0 10px;
         }
-      }
-
-      .no-heroes-message {
-        color: #fff;
-        text-align: center;
       }
     }
   }

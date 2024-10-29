@@ -1,15 +1,20 @@
-// src/pages/HeroDetail.tsx
 import React, { useEffect, useState } from 'react';
-import { Hero } from '../types/types';
 import { useParams } from 'react-router-dom';
-import { HeroModal } from '../components/HeroModal/HeroModal'; // Якщо ви використовуєте модальне вікно
+import { Hero } from '../types/types';
+import { HeroModal } from '../components/HeroModal';
+import { Loader } from '../components/Loader';
 
+// I declare the functional component HeroDetails with typing TypeScript (React.FC).
 export const HeroDetails: React.FC = () => {
-  const { heroId } = useParams<{ heroId: string }>();
-  const [hero, setHero] = useState<Hero | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { heroId } = useParams<{ heroId: string }>(); //Getting heroId parameter from URL
+  const [hero, setHero] = useState<Hero | null>(null); //Determining the status of hero
+  const [isModalOpen, setIsModalOpen] = useState(false); //Determining the status of isModalOpen
 
+  /* useEffect is called every time the heroId changes, which allows data
+  to be loaded when the URL changes */
   useEffect(() => {
+    /*  fetchHeroDetails is an asynchronous function that retrieves hero data
+    from the heroId-based API and stores it in the hero state. */
     const fetchHeroDetails = async () => {
       try {
         const response = await fetch(
@@ -27,12 +32,15 @@ export const HeroDetails: React.FC = () => {
     }
   }, [heroId]);
 
+  // This function sets isModalOpen to false, which closes the modal window.
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  if (!hero) return <div>Loading...</div>;
+  // If the data is not already loaded (hero = = = null), the < Loading/> component is rendered.
+  if (!hero) return <Loader />;
 
+  // Displays details about the hero using the properties of the hero object.
   return (
     <div>
       <h2>Hero Details for {hero.name}</h2>
