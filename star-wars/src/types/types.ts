@@ -26,13 +26,13 @@ export interface HeroItemProps {
 
 export interface HeroGraphProps {
   heroName: string;
-  birthYear: string;
-  eyeColor: string;
+  birth_year: string;
+  eye_color: string;
   gender: string;
-  hairColor: string;
+  hair_color: string;
   height: string;
   mass: string;
-  skinColor: string;
+  skin_color: string;
   homeworld: string;
   films: string[];
   starships: string[];
@@ -44,13 +44,13 @@ export interface HeroGraphProps {
 export interface HeroNodeProps {
   heroImage: string;
   heroName: string;
-  birthYear: string;
-  eyeColor: string;
+  birth_year: string;
+  eye_color: string;
   gender: string;
-  hairColor: string;
+  hair_color: string;
   height: string;
   mass: string;
-  skinColor: string;
+  skin_color: string;
   homeworld: string;
 }
 
@@ -68,4 +68,9 @@ export interface HeroModalProps {
   filmTitles: string[];
   starshipNames: string[];
   close: () => void;
+}
+
+export interface PaginationProps {
+  pageCount: number;
+  handlePageClick: (event: { selected: number }) => void;
 }
